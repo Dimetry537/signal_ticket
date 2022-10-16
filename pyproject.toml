@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "signal-ticket"
+version = "0.1.0"
+description = "signal ticket for medical organisators"
+authors = ["Maksakov M.D."]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "signal_ticket"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
