@@ -9,6 +9,13 @@ packages = [{include = "signal_ticket"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+fastapi = "^0.85.1"
+uvicorn = {extras = ["standard"], version = "^0.18.3"}
+fastapi-sqlalchemy = "^0.2.1"
+pydantic = "^1.10.2"
+alembic = "^1.8.1"
+psycopg2 = "^2.9.4"
+python-dotenv = "^0.21.0"
 
 
 [build-system]
