@@ -1,0 +1,15 @@
+version: "3"
+services:
+  pg:
+    image: postgres:14
+    ports:
+      - 127.0.0.1:5432:5432
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+volumes:
+  pg-data:
+    driver: local
