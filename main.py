@@ -22,6 +22,14 @@ app = FastAPI()
 
 app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URI'])
 
+@app.post('/ticket/', response_model=SchemaTicket, response_model=SchemaDoctor)
+async def create_ticket(ticket: SchemaTicket):
+    db_ticket = ModelTicket(full_name=ticket.full_name, birthday=ticket.birthday, diagnosis=ticket.diagnosis, doctor_id=Doctor.name)
+    db.session.add(db_ticket)
+    db.session.commit()
+    db.session.refresh(db_ticket)
+    return db_ticket
+
 @app.post('/doctors/', response_model=SchemaDoctor)
 async def create_doctor(doctor: SchemaDoctor):
     db_doctor = ModelDoctor(name=doctor.name, specialization=doctor.specialization)
