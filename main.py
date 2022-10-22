@@ -1,3 +1,4 @@
+from http.client import HTTPException
 from dotenv import load_dotenv
 
 load_dotenv('.env')
@@ -42,3 +43,10 @@ async def create_doctor(doctor: SchemaDoctor):
 async def read_doctor():
     doctor = db.session.query(ModelDoctor).first()
     return doctor
+
+async def get():
+    try:
+        doctor_not_exist = 
+    except IndexError:
+        raise HTTPException(404, "Такого доктора нет в списке")
+    return doctor_not_exist
