@@ -61,6 +61,9 @@ class Ticket:
     def __repr__(self) -> List:
         return f"{self.full_name} | {self.birthday} | {self.age} | {self.date} | {self.diagnosis} | {self.referral_clinic} | {self.ambulance_employee} | {self.doctor} | {self.date_except}"
 
+class TicketError(BaseException):
+    pass
+
 # class File:
 
 #     def __init__(self, filename):
