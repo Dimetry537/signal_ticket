@@ -65,5 +65,4 @@ async def create_doctor(doctor: SchemaDoctor):
     db.session.commit()
     db.session.refresh(db_doctor)
     return db_doctor
-
-#1
+    
