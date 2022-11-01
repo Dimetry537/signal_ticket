@@ -30,10 +30,10 @@ app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URI'])
 
 @app.post('/ticket/', response_model=SchemaTicket)
 async def create_ticket(ticket: SchemaTicket):
-    создать такого доктора нет
     doctor = db.session.query(ModelDoctor).filter_by(id=id).first()
     if ticket.doctor_id not in doctor:
         raise HTTPException(status_code=404, detail="doctor not found")
+    #создать такого доктора нет
     db_ticket = ModelTicket(
         full_name=ticket.full_name, 
         birthday=ticket.birthday,
@@ -51,12 +51,6 @@ async def show_doctor(id):
     if not doctor:
         raise HTTPException(status_code=404, detail='Такого доктора не существует')
     return doctor
-
-@app.get("/doctor_show", response_model=SchemaDoctor)
-async def show_doctors():
-    doctor = db.session.query(ModelDoctor).all()
-    return doctor
-
 
 @app.post('/doctors/', response_model=SchemaDoctor)
 async def create_doctor(doctor: SchemaDoctor):
