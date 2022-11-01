@@ -34,7 +34,7 @@ async def create_ticket(ticket: SchemaTicket):
     if ticket.doctor_id not in doctor:
         raise HTTPException(status_code=404, detail="doctor not found")
     #создать такого доктора нет
-    doctor = db.session.query(ModelDoctor).filter_by(id=id).first()
+    doctor = db.session.query(ModelDoctor).filter_by(id)
     if ticket.doctor_id not in doctor:
         raise HTTPException(status_code=404, detail="doctor not found")
     db_ticket = ModelTicket(
