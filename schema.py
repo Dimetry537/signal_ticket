@@ -16,7 +16,7 @@ class TicketParams(BaseModel):
 class DoctorResponse(BaseModel):
     name: str
     specialization: str
-    time_created: datetime | None
+    time_created: datetime
     time_updated: datetime | None
 
     class Config:
