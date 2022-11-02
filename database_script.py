@@ -19,5 +19,5 @@ with Session(engine) as session:
     # filter_by, order
     # найти все тикеты конкретного доктора
     # напечатать их названия и Id
+    # SQL
     print(doctor.name)
-    

@@ -5,7 +5,7 @@ description = "signal ticket for medical organisators"
 authors = ["Maksakov M.D."]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "signal_ticket"}]
+packages = []
 
 [tool.poetry.dependencies]
 python = "^3.10"

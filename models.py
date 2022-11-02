@@ -7,8 +7,9 @@ from datetime import datetime, date
 Base  = declarative_base()
 
 def calculate_age(context):
-    bidthdate_date = context.get_current_parameters()["birthday"]
-    born = datetime.strptime(bidthdate_date[:10], '%d.%m.%Y')
+    birthdate_date = context.get_current_parameters()["birthday"].isoformat()
+    print(birthdate_date)
+    born = datetime.strptime(birthdate_date[:10], '%Y-%m-%d')
     today = date.today()
     return today.year - born.year - ((today.month, today.day) < (born.month, born, born.day))
 
