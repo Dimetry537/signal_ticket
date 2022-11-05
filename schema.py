@@ -14,6 +14,7 @@ class TicketParams(BaseModel):
         orm_mode = True
 
 class DoctorResponse(BaseModel):
+    id: int
     name: str
     specialization: str
     time_created: datetime

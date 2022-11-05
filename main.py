@@ -43,6 +43,11 @@ async def create_ticket(ticket: TicketParams):
     db.session.refresh(db_ticket)
     return db_ticket
 
+@app.get("/tickets", response_model=List[TicketParams])
+async def index_tickets():
+    tickets = db.session.query(Ticket).all()
+    return tickets
+
 @app.get("/doctors/{id}", response_model=DoctorResponse)
 async def show_doctor(id):
     doctor = db.session.query(Doctor).filter_by(id=id).first()
@@ -54,6 +59,13 @@ async def show_doctor(id):
 async def index_doctor():
     doctors = db.session.query(Doctor).all()
     return doctors
+
+@app.get("/tickets/{doctor_id}", response_model=List[TicketParams])
+async def index_tickets(doctor_id):
+    tickets = db.session.query(Ticket).filter(Ticket.doctor_id == doctor_id).all()
+    if not tickets:
+        raise HTTPException(status_code=404, detail='Такого талона не существует')
+    return tickets
 
 @app.post('/doctors', response_model=DoctorResponse)
 async def create_doctor(doctor: DoctorParams):
