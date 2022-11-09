@@ -5,8 +5,8 @@ load_dotenv('.env')
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from models import Ticket as ModelTicket
-from models import Doctor as ModelDoctor
+from models import Ticket
+from models import Doctor 
 
 import logging
 logging.basicConfig()
@@ -15,9 +15,13 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 engine = create_engine(os.environ['DATABASE_URI'])
 
 with Session(engine) as session:
-    doctor = session.query(ModelDoctor).first()
+   # сделать получение докторов без тикетов
+   # перенести все SQL в код
+    spec = 'Urolog'
+    tickets = session.query(Ticket).join(Ticket.doctor).filter(Doctor.specialization == 'Urolog').all()
     # filter_by, order
     # найти все тикеты конкретного доктора
     # напечатать их названия и Id
     # SQL
-    print(doctor.name)
+    print(tickets)
+    #print(doctor.name)

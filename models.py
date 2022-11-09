@@ -14,6 +14,8 @@ class Doctor(Base):
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
 
+    tickets = relationship("Ticket", back_populates="doctor")
+
 def calculate_age(context):
     birthdate_date = context.get_current_parameters()["birthday"].isoformat()
     print(birthdate_date)
@@ -34,4 +36,7 @@ class Ticket(Base):
     date_except = Column(DateTime)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
-    # doctor = relationship('doctors')
+    doctor = relationship('Doctor', back_populates="tickets")
+
+    def __repr__(self) -> str:
+        return self.full_name
