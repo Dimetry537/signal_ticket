@@ -25,7 +25,7 @@ with Session(engine) as session:
     # SELECT COUNT(doctor_id) as count, doctors.name FROM tickets JOIN doctors ON doctor_id = doctors.id GROUP BY "doctors"."id";
     doctors_3_tickets = session.query(Ticket, Doctor.name).join(Ticket.doctor).group_by(Doctor.id).having(func.count(Ticket.doctor_id) > 3)
     # SELECT COUNT(doctor_id) as count, doctors.name FROM tickets JOIN doctors ON doctor_id = doctors.id GROUP BY "doctors"."id" HAVING tickets.count > 3;
-   doctors_without_ticket = session.query(Ticket).join(Doctor).outerjoin(right)
+   doctors_without_ticket = session.query(Ticket, Doctor).outerjoin(Ticket.doctor_id == Doctor.id).all
     #select * from tickets right join doctors on "doctors"."id" = "tickets"."doctor_id" where "tickets"."doctor_id" is null;
     # найти все тикеты конкретного доктора
     # напечатать их названия и Id
