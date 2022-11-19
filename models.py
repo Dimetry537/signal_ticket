@@ -16,6 +16,9 @@ class Doctor(Base):
 
     tickets = relationship("Ticket", back_populates="doctor")
 
+    def __repr__(self) -> str:
+        return f"{self.name} | {self.specialization}"
+
 def calculate_age(context):
     birthdate_date = context.get_current_parameters()["birthday"].isoformat()
     print(birthdate_date)
@@ -39,4 +42,4 @@ class Ticket(Base):
     doctor = relationship('Doctor', back_populates="tickets")
 
     def __repr__(self) -> str:
-        return self.full_name
+        return f"{self.full_name} | {self.doctor_id}"
