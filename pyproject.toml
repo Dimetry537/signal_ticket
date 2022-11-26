@@ -5,7 +5,7 @@ description = "signal ticket for medical organisators"
 authors = ["Maksakov M.D."]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "signal_ticket"}]
+packages = []
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -16,6 +16,8 @@ pydantic = "^1.10.2"
 alembic = "^1.8.1"
 psycopg2 = "^2.9.4"
 python-dotenv = "^0.21.0"
+sqlalchemy = {extras = ["asyncio"], version = "^1.4.44"}
+asyncpg = "^0.27.0"
 
 
 [build-system]
