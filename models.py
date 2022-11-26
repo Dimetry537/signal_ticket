@@ -1,10 +1,17 @@
+import os
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from datetime import datetime, date
 
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 Base  = declarative_base()
+
+engine = create_async_engine(os.environ['DATABASE_URI'])
+
+async_session = sessionmaker(engine, class_=AsyncSession)
 
 class Doctor(Base):
     __tablename__ = 'doctors'
