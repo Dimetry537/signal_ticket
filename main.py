@@ -25,7 +25,7 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 app = FastAPI()
 
-app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URI'])
+app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URL'])
 
 @app.post('/tickets', response_model=TicketParams)
 async def create_ticket(ticket: TicketParams):
