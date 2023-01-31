@@ -1,20 +1,19 @@
+from typing import List
 from dotenv import load_dotenv
-
+from sqlalchemy import select
 load_dotenv('.env')
 
 import os
 from fastapi import FastAPI, HTTPException
 from doctor import Doctor
-from fastapi_sqlalchemy import DBSessionMiddleware, db
+from fastapi_sqlalchemy import DBSessionMiddleware
 
-from schema import Ticket as SchemaTicket
-from schema import Doctor as SchemaDoctor
+from schema import TicketParams
+from schema import DoctorParams, DoctorResponse
 
-from schema import Ticket
-from schema import Doctor
-
-from models import Ticket as ModelTicket
-from models import Doctor as ModelDoctor
+from models import async_session
+from models import Ticket
+from models import Doctor
 
 import logging
 logging.basicConfig()
@@ -26,34 +25,81 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 app = FastAPI()
 
-app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URI'])
+app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URL'])
 
-@app.post('/ticket/', response_model=SchemaTicket)
-async def create_ticket(ticket: SchemaTicket):
-    #создать такого доктора нет
-    db_ticket = ModelTicket(
-        full_name=ticket.full_name, 
-        birthday=ticket.birthday,
-        diagnosis=ticket.diagnosis, 
-        doctor_id=ticket.doctor_id
-    )
-    db.session.add(db_ticket)
-    db.session.commit()
-    db.session.refresh(db_ticket)
-    return db_ticket
+@app.post('/tickets', response_model=TicketParams)
+async def create_ticket(ticket: TicketParams):
+    # select * from doctors where  id =ticket.doctor_id
+    async with async_session() as session:
+        doctor = session.query(Doctor).filter_by(id=ticket.doctor_id).first()
+        if not doctor:
+            raise HTTPException(status_code=404, detail='Такого доктора не существует')
+        db_ticket = Ticket(
+            full_name=ticket.full_name,
+            birthday=ticket.birthday,
+            diagnosis=ticket.diagnosis,
+            doctor_id=ticket.doctor_id
+        )
+        session.add(db_ticket)
+        session.commit()
+        session.refresh(db_ticket)
+        return db_ticket
 
-@app.get("/doctors/{id}", response_model=SchemaDoctor)
+@app.get("/tickets", response_model=List[TicketParams])
+async def index_tickets():
+    async with async_session() as session:
+        tickets = session.query(Ticket).all()
+        return tickets
+
+@app.get("/tickets/{id}", response_model=List[TicketParams])
+async def show_ticket(id):
+    async with async_session() as session:
+        ticket = session.query(Ticket).filter_by(id=id).first()
+        if not ticket:
+            raise HTTPException(status_code=404, detail='Такого ticket не существует')
+        return ticket
+
+@app.get("/doctors/{id}", response_model=DoctorResponse)
 async def show_doctor(id):
-    doctor = db.session.query(ModelDoctor).filter_by(id=id).first()
-    if not doctor:
-        raise HTTPException(status_code=404, detail='Такого доктора не существует')
-    return doctor
+    async with async_session() as session:
+        doctor = session.query(Doctor).filter_by(id=id).first()
+        if not doctor:
+            raise HTTPException(status_code=404, detail='Такого доктора не существует')
+        return doctor
 
-@app.post('/doctors/', response_model=SchemaDoctor)
-async def create_doctor(doctor: SchemaDoctor):
-    db_doctor = ModelDoctor(name=doctor.name, specialization=doctor.specialization)
-    db.session.add(db_doctor)
-    db.session.commit()
-    db.session.refresh(db_doctor)
-    return db_doctor
-    
+@app.get("/doctors", response_model=List[DoctorResponse])
+async def index_doctor():
+    async with async_session() as session:
+        doctors = await session.execute(select(Doctor))
+        return doctors.scalars().all()
+
+@app.get("/doctors/{doctor_id}/tickets", response_model=List[TicketParams])
+async def index_tickets(doctor_id):
+    async with async_session() as session:
+        tickets = session.query(Ticket).filter(Ticket.doctor_id == doctor_id).all()
+        if not tickets:
+            raise HTTPException(status_code=404, detail='Такого талона не существует')
+        return tickets
+
+    # 1) SOAP - xml - Java 99%, C#
+    # 2) JSON - 99%
+    # {
+    #     "key": "value",
+    #     "key1": {
+    #         "key": "value"
+    #     }
+    # }
+    # REST - https://ru.wikipedia.org/wiki/REST
+    # JSONAPI - https://jsonapi.org/
+    # JSON -
+    # GraphQL
+    # 3) binary - rpc, grpc - https://en.wikipedia.org/wiki/GRPC
+
+@app.post('/doctors', response_model=DoctorResponse)
+async def create_doctor(doctor: DoctorParams):
+    async with async_session() as session:
+        db_doctor = Doctor(name=doctor.name, specialization=doctor.specialization)
+        session.add(db_doctor)
+        session.commit()
+        session.refresh(db_doctor)
+        return db_doctor

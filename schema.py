@@ -2,7 +2,7 @@
 from datetime import datetime
 from pydantic import BaseModel
 
-class Ticket(BaseModel):
+class TicketParams(BaseModel):
     full_name: str
     birthday: datetime
     diagnosis: str
@@ -13,10 +13,19 @@ class Ticket(BaseModel):
     class Config:
         orm_mode = True
 
-class Doctor(BaseModel):
+class DoctorResponse(BaseModel):
+    id: int
+    name: str
+    specialization: str
+    time_created: datetime
+    time_updated: datetime | None
+
+    class Config:
+        orm_mode = True
+
+class DoctorParams(BaseModel):
     name: str
     specialization: str
 
     class Config:
         orm_mode = True
-        
